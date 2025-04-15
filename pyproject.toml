@@ -1,0 +1,20 @@
+[project]
+name = "range-coding-cython"
+version = "0.1.0"
+description = "A range coding lib implemented in Cython"
+readme = "README.md"
+authors = [{ name = "Namoe", email = "yangziming@buaa.edu.cn" }]
+requires-python = ">=3.12"
+dependencies = ["cython>=3.0.12"]
+
+[build-system]
+requires = ["setuptools", "cython"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["src", "src.range_coding_cython"]
+ext-modules = [
+    { name = "range_coding", sources = [
+        "src/range_coding_cython/range_coding.py",
+    ] },
+]
