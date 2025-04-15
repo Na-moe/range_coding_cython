@@ -24,7 +24,7 @@ jobs:
         run: uv venv .venv && source .venv/bin/activate && uv pip install . && uv build --wheel -o dist
 
       - name: Upload wheel
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: wheels
           path: dist
