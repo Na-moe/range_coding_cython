@@ -1,9 +1,9 @@
-name: Build Wheel with uv build
+name: Build manylinux Wheel with uv
 
 on:
   push:
     branches:
-      - main
+      - main 
   pull_request:
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.12
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
@@ -20,11 +20,23 @@ jobs:
       - name: Install uv
         run: pip install uv
 
-      - name: Build wheel with uv build
-        run: uv venv .venv && source .venv/bin/activate && uv pip install . && uv build --wheel -o dist
+      - name: Run cibuildwheel with uv
+        uses: pypa/cibuildwheel@v2.16.5
+        env:
+          CIBW_BEFORE_ALL: |
+            python -m pip install uv
+            uv venv .venv
+            source .venv/bin/activate
+            uv pip install .  # 安装项目及其依赖
+            export PATH="$PATH:$PWD/.venv/bin" # Add virtualenv to path
+          CIBW_BUILD: cp312-*
+          CIBW_ENVIRONMENT: CXXFLAGS="-std=c++11"
+          CIBW_MANYLINUX_IMAGE: manylinux_2_28
+          CIBW_BUILD_FRONTEND: build
+          CIBW_WHEEL_DIR: wheelhouse
 
-      - name: Upload wheel
+      - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
           name: wheels
-          path: dist
+          path: wheelhouse
